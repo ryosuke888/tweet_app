@@ -1,0 +1,288 @@
+/* 全体 */
+html {
+	height: 100%;
+}
+ul {
+	list-style-type: none;
+}
+body {
+	margin: 0;
+	height: 100%;
+}
+header {
+	background-color: red;
+	width: 650px;
+	height: 80px;
+}
+main {
+	background-color: yellow;
+	width: 650px;
+	height: 100%;
+	
+}
+aside {
+	background-color: blue;
+	width: 35%;
+}
+nav {
+	background-color: green;
+	order: -1;
+	width: 25%;
+}
+.screen {
+	display: flex;
+	height: 100%;
+}
+.box {
+	display: flex;
+	flex-direction: column;
+
+}
+/* header */
+header {
+	
+	border: 1px solid lightgray;
+
+	z-index: 100;
+}
+.home {      
+	color: white;
+	font-size: 25px;
+}
+/* main */
+
+.test {
+	width: 100%;
+}
+.display {
+	background-color: black;
+ 	width: 100%;
+}
+/* tweet */
+.tweet {
+	background-color: gray;
+	height: 120px;
+	display: flex;
+	justify-content: center;
+}
+.tweet-main-box {
+	display: flex;
+	width: 100%;
+	background-color: black;
+}
+.tweet-main-left {
+	width: 60px;
+	padding-left: 5px;
+	padding-top: 5px;
+}
+.tweet-main-right {
+	width: 100%;
+}
+.main-form {
+	height: 100%;
+	width: 100%;
+	padding-right: 5px;
+	padding-top: 5px;
+}
+.main-form textarea {
+	width: 100%;
+	height: 60%;
+}
+.main-form input {
+	margin-left: 85%;
+}
+/* card */
+.card {
+	width: 100%;
+	display: flex;
+	justify-content: center;
+}
+.card-content {
+	display: flex;
+	
+}
+.card-contents-name {
+	display: flex;
+	justify-content: space-between;
+}
+.card-contents-name h4 {
+	font-size: 16px;
+}
+.card-content-left {
+	width: 60px;
+	padding-left: 5px;
+	padding-top: 5px;
+}
+.card-contents {
+	padding-left: 5px;
+	padding-right: 60px;
+	width: 100%;
+}
+.heart2 {
+	display: block;
+}
+.heart2 {
+	display: none;
+}
+.card-contents-tweet {
+	width: 100%;
+	overflow-wrap: break-word;
+}
+.card-content-img {
+	background-image: url(IMG_1.jpeg);
+	background-size: cover;
+	background-repeat: no-repeat;
+	background-position: center;
+	border-radius: 50%;
+	height: 50px;
+	width: 50px;
+}
+/* nav */
+nav ul {
+	padding-top: 50px;
+}
+.fa-home {
+	display: inline-block;
+}
+.nav-font {
+	display: inline-block;
+	padding-left: 20px;
+	font-size: 25px;
+}
+.tweet-btn {
+	display: block;
+	background-color: #00bfff;
+	line-height: 50px;
+	width: 220px;
+	text-align: center;
+	border-radius: 30px;
+	color: white;
+}
+.profile-img {
+	display: inline-block;
+	background-image: url();
+	background-size: contain;
+	background-repeat: no-repeat;
+	height: 40px;
+	width: 40px;
+	border-radius: 50%;
+}
+/* modal */
+.tweet-modal {
+	display: none;
+	position: fixed;
+	width: 100%;
+	height: 100%;
+	top: 0;
+	left: 0;
+	z-index: 100;
+	background-color:rgba(0,0,0,0.75);
+}
+.tweet-content {
+	background-color: lightgray;
+	border-radius: 10px;
+	height: 250px;
+	width: 450px;
+	position: absolute;
+	top: 15%;
+	left: 35%;
+	z-index: 1000;
+}
+.tweet-modal-close {
+	border-bottom: 1px solid gray;
+}
+.fa-times {
+	font-size: 25px;
+	padding-left: 15px;
+	padding-top: 10px;
+	padding-bottom: 10px;
+}
+
+.tweet-contents {
+	height: 100%;
+	width: 100%;
+	display: flex;
+
+}
+.tweet-contents-left {
+	width: 60px;
+	padding: 5px;
+}
+.tweet-contents-img {
+	background-image: url(IMG_1.jpeg);
+	background-size: cover;
+	background-repeat: no-repeat;
+	background-position: center;
+	border-radius: 50%;
+	height: 50px;
+	width: 50px;
+}
+.form {
+	height: 100%;
+	width: 100%;
+	padding-right: 5px;
+}
+.form textarea {
+	width: 100%;
+	height: 60%;
+}
+.form input {
+	margin-left: 300px;
+}
+
+/* aside */
+aside {
+
+}
+.user-modal {
+	background-color: gray;
+	border-radius: 5%;;
+	height: 350px;
+	width: 75%;
+	margin-left: 10%;
+	margin-top: 10%;
+
+}
+.user-modal-top {
+	padding-top: 5px;
+	padding-left: 5px;
+	border-bottom: 1px solid lightgray;
+}
+.user-modal-content {
+	display: flex;
+	border-bottom: 1px solid lightgray;
+	padding: 10px 0;
+}
+.user-modal-content-left {
+	width: 60px;
+	padding: 5px;
+}
+.user-modal-content-img {
+	background-image: url(IMG_1.jpeg);
+	background-size: cover;
+	background-repeat: no-repeat;
+	background-position: center;
+	border-radius: 50%;
+	height: 50px;
+	width: 50px;
+}
+.user-modal-content-middle {
+
+}
+.user-modal-content-right {
+	margin-left: 85px;
+	padding-top: 10px;
+}
+.user-follow-btn {
+	display: block;
+	background-color: #00bfff;
+	line-height: 30px;
+	width: 120px;
+	text-align: center;
+	border-radius: 30px;
+	color: white;
+}
+.user-modal-bottom {
+	padding-left: 10px;
+	padding-top: 15px;
+}

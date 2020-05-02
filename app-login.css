@@ -1,0 +1,116 @@
+html {
+	height: 100%;
+	width: 100%;
+}
+body {
+	height: 100%;
+	width: 100%;
+}
+.login {
+	background-color: navy;
+	height: 100%;
+	width: 100%;
+}
+.login-title {
+	text-align: center;
+}
+.login-title h1 {
+	color: white;
+	padding-top: 100px;
+}
+.login-form {
+	display: flex;
+	justify-content: center;
+}
+.login-form input {
+	display: block;
+	margin: 10px;
+	width: 500px;
+	height: 50px;
+}
+.register-title p {
+	color: white;
+}
+.submit {
+	display: flex;
+	justify-content: center;
+
+}
+.submit input {
+	width: 500px;
+	border-radius: 25px;
+}
+.login-bottom {
+	text-align: center;
+	color: white;
+}
+
+/* account */
+.register-box {
+	display: flex;
+	justify-content: center;
+	margin-top: 80px;
+}
+.register {
+	background-color: navy;
+	height: 400px;
+	width: 600px;
+}
+
+.register-contents2 {
+	display: none;
+}
+.register-title {
+	text-align: center;
+}
+.register-title h1 {
+	color: white;
+	padding-top: 15px;
+}
+.register-form {
+	display: flex;
+	justify-content: center;
+}
+.register-form input {
+	display: block;
+	margin: 10px;
+	width: 500px;
+	height: 50px;
+}
+.next {
+	margin-left: 480px;
+	margin-top: 20px;
+}
+.next-btn {
+	display: block;
+	background-color: green;
+	line-height: 35px;
+	width: 100px;
+	text-align: center;
+	border-radius: 25px;
+	color: white;
+	z-index: 10;
+}
+.back {
+	margin-left: 480px;
+	margin-top: 20px;
+}
+.back-btn {
+	display: block;
+	background-color: green;
+	line-height: 35px;
+	width: 100px;
+	text-align: center;
+	border-radius: 25px;
+	color: white;
+	z-index: 10;
+}
+.submit {
+	display: flex;
+	justify-content: center;
+
+}
+.submit input {
+	width: 500px;
+	border-radius: 25px;
+}
