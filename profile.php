@@ -11,13 +11,13 @@ session_start();
 
 if(isset($_POST["send"])) {
     $tempfile = $_FILES['file']['tmp_name'];
-    $filemove = '/Applications/MAMP/htdocs/app/image/' . $_FILES['file']['name'];
+    $filemove = '/Applications/MAMP/htdocs/app/image/profile/' . $_FILES['file']['name'];
     $filename = $_FILES['file']['name'];
     move_uploaded_file($tempfile , $filemove );
 
     if (!empty($_SESSION["name"])) {
 
-var_dump('1');
+//var_dump('1');
         try {
             $db = getDb();
             $stmt = $db->prepare('INSERT INTO ImageUrl(url, name) 
@@ -25,8 +25,8 @@ var_dump('1');
             $stmt->bindValue(':filename', $filename);
             $stmt->bindValue(':name', $_SESSION['name']);
             $stmt->execute();
-
-var_dump('2');
+            header("Location:app.php");
+//var_dump('2');
         } catch(PDOException $e) {
             print "エラーメッセージ：{$e->getMessage()}";
         }
