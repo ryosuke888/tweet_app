@@ -13,31 +13,27 @@ if(isset($_SESSION['name'])){
         } else {
           header('Location:app_login.php');
           exit;
-        }
-try {
-  $db = getDb();
-  $sql = 'select name from UserData';
-  $stmt = $db->query($sql);
-  $stmt->execute();
-} 
- catch (\Exception $e) {
-  echo $e->getMessage() . PHP_EOL;
-}
-
+		}
+		
 /* 画像をアップロードするためにデータベースへ接続 */
 try {
   $db = getDb();
-  $sql = 'select url from ImageUrl';
-  $stlt = $db->query($sql);
+  $sql = 'select url from ImageUrl where name = :name ';
+  $stlt = $db->prepare($sql);
+  $stlt->bindValue(':name'  ,$_SESSION['name']);
   $stlt->execute();
+  $row = $stlt->fetch(PDO::FETCH_ASSOC);
+  $url= $row['url'];
 } 
  catch (\Exception $e) {
   echo $e->getMessage() . PHP_EOL;
 }
 
+
+/* tweetを表示するためにデータベースへ接続 */
 try {
   $db = getDb();
-  $sql = 'select name, tweet, day from Tweet order by id desc';
+  $sql = 'select name, tweet, day, image_url from posts order by id desc';
   $stt = $db->query($sql);
   $stt->execute();
 } 
@@ -53,7 +49,7 @@ try {
 	<meta charset="utf-8">
 	<meta name="viewport" http-equiv="X-UA-Compatible" content="width=device-width, initial-scale=1.0">
 	<title>tweet</title>
-	<link rel="stylesheet" href="app.css">
+	<link rel="stylesheet" href="style.php">
 	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.0/css/all.css">	
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 </head>
@@ -61,10 +57,7 @@ try {
 <div class="screen">
 	<div class="box">
 		<header>
-			<h2 class="home">Home</h2> 
-			<?php foreach( $stlt as $row) : ?>
-				<img src="" alt="">
-			<?php endforeach; ?>
+			<h2 class="home">Home</h2>
 		</header>
 		<main>
 			<div class="test">
@@ -73,15 +66,14 @@ try {
 						<div class="tweet-main-box">
 							<div class="tweet-main-left">
 								<div class="tweet-contents-img">
-
 								</div>
-								
 							</div>
 							<div class="tweet-main-right">
 								<form action="tweet.php" method="post" accept-charset="utf-8" class="main-form">
+								<input type="hidden" name="url" value="<?php echo $url ?>">
 								<input type="text" name="name" value="<?php echo $_SESSION['name']; ?>">
 								<textarea name="tweet" placeholder="What's happening?"></textarea>
-								<input type="submit" name="投稿" >
+									<input type="submit" name="投稿" >
 								</form>
 							</div>
 						</div>
@@ -92,6 +84,7 @@ try {
 						<div class="card-content">
 							<div class="card-content-left">
 								<div class="card-content-img"></div>
+								<!-- <img src="image/profile/<?php echo $row['image_url']; ?>" alt="" height="50" width="50"> -->
 							</div>
 							<div class="card-contents">
 								<div class="card-contents-name">
