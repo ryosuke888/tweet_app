@@ -16,7 +16,7 @@ if(isset($_POST["send"])) {
     move_uploaded_file($tempfile , $filemove );
 
     if (!empty($_SESSION["name"])) {
-
+        
 //var_dump('1');
         try {
             $db = getDb();

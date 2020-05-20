@@ -8,15 +8,14 @@ require_once('DbManager.php');
 require_once('app.php');
 
 
+
     if(isset($_POST["send"])) {
     $tempfile = $_FILES['file']['tmp_name'];
     $filemove = '/Applications/MAMP/htdocs/app/image/' . $_FILES['file']['name'];
-    move_uploaded_file($tempfile , $filemove );
-
+    move_uploaded_file($tempfile , $filemove);
     try {
   $db = getDb();
-  $stmt = $db->prepare('INSERT INTO ImageUrl(url, name) 
-    VALUES(?, ?)');
+  $stmt = $db->prepare('INSERT INTO ImageUrl(url, name) VALUES(?, ?)');
   $stmt->execute(array($filemove, $_SESSION['name']));
   } catch(PDOException $e) {
     print "エラーメッセージ：{$e->getMessage()}";

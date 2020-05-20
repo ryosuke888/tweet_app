@@ -29,10 +29,11 @@ try {
   echo $e->getMessage() . PHP_EOL;
 }
 
+
 /* tweetを表示するためにデータベースへ接続 */
 try {
   $db = getDb();
-  $sql = 'select name, tweet, day from Tweet order by id desc';
+  $sql = 'select name, tweet, day, image_url from posts order by id desc';
   $stt = $db->query($sql);
   $stt->execute();
 } 
@@ -56,7 +57,7 @@ try {
 <div class="screen">
 	<div class="box">
 		<header>
-			<h2 class="home">Home</h2> >
+			<h2 class="home">Home</h2>
 		</header>
 		<main>
 			<div class="test">
@@ -69,6 +70,7 @@ try {
 							</div>
 							<div class="tweet-main-right">
 								<form action="tweet.php" method="post" accept-charset="utf-8" class="main-form">
+								<input type="hidden" name="url" value="<?php echo $url ?>">
 								<input type="text" name="name" value="<?php echo $_SESSION['name']; ?>">
 								<textarea name="tweet" placeholder="What's happening?"></textarea>
 									<input type="submit" name="投稿" >
@@ -82,6 +84,7 @@ try {
 						<div class="card-content">
 							<div class="card-content-left">
 								<div class="card-content-img"></div>
+								<!-- <img src="image/profile/<?php echo $row['image_url']; ?>" alt="" height="50" width="50"> -->
 							</div>
 							<div class="card-contents">
 								<div class="card-contents-name">

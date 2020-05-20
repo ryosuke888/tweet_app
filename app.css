@@ -130,13 +130,16 @@ header {
 	overflow-wrap: break-word;
 }
 .card-content-img {
-	background-image: url(image/profile/<?php echo $url; ?>);
+	background-image: url(image/profile/<?php foreach($stht as $row2) {echo $row2;} ?>);
 	background-size: cover;
 	background-repeat: no-repeat;
 	background-position: center;
 	border-radius: 50%;
 	height: 50px;
 	width: 50px;
+}
+.card-content-left img {
+	border-radius: 50%;
 }
 /* nav */
 nav ul {
