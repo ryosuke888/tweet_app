@@ -79,12 +79,12 @@ try {
 						</div>
 					</div>
 					<?php foreach( $stt as $row) : ?>
-						<form action="fav.php" method="post" accept-charset="utf-8">
+						<!-- <form action="fav.php" method="post" accept-charset="utf-8"> -->
 					<div class="card">
 						<div class="card-content">
 							<div class="card-content-left">
-								<div class="card-content-img"></div>
-								<!-- <img src="image/profile/<?php echo $row['image_url']; ?>" alt="" height="50" width="50"> -->
+								<!-- <div class="card-content-img"></div> -->
+								<img src="image/profile/<?php echo $row['image_url']; ?>" alt="" height="50" width="50"> 
 							</div>
 							<div class="card-contents">
 								<div class="card-contents-name">
@@ -95,15 +95,18 @@ try {
 								<div class="card-contents-tweet">
 									<input type="hidden" name="tweet" value="<?php echo $row['tweet']; ?>" readonly>
 									<p><?php echo $row['tweet']; ?></p>
-										<button type="submit" class="heart" id="heart"><a href="#" ><i class="far fa-heart"></i></a></button>
-										<button type="submit" class="heart2" id="heart2">
-											<a href="#"><i class="fas fa-heart"></i></a>
-										</button>
+									<div class="iine">
+											<button onclick="iine(this, 1)" class="heart" id="heart"><a href="#"><i class="far fa-heart"></i></a></button>
+											<button type="submit" class="heart2" id="heart2">
+												<a href="#"><i class="fas fa-heart"></i></a>
+											</button>
+											<span class="count">0</span>
+									</div>
 								</div>
 							</div>
 						</div>
 					</div>
-					</form>
+					<!-- </form> -->
 					<?php endforeach; ?>
 				</div>
 			</div>
@@ -117,45 +120,22 @@ try {
 				</div>
 			</div>
 			<div class="user-modal-middle">
+<?php foreach( $stt as $row) : ?>
 				<div class="user-modal-contents">
 					<div class="user-modal-content">
 						<div class="user-modal-content-left">
-							<div class="user-modal-content-img"></div>
+							<!-- <div class="user-modal-content-img"></div> -->
+							<img src="image/profile/<?php echo $row['image_url']; ?>" alt="" height="50" width="50">
 						</div>
 						<div class="user-modal-content-middle">
-							<p>testname</p>
+							<p><?php echo $row['name']; ?></p>
 						</div>
 						<div class="user-modal-content-right">
 							<a href="" class="user-follow-btn">フォロー</a>
 						</div>
 					</div>
 				</div>
-				<div class="user-modal-contents">
-					<div class="user-modal-content">
-						<div class="user-modal-content-left">
-							<div class="user-modal-content-img"></div>
-						</div>
-						<div class="user-modal-content-middle">
-							<p>testname</p>
-						</div>
-						<div class="user-modal-content-right">
-							<a href="" class="user-follow-btn">フォロー</a>
-						</div>
-					</div>
-				</div>
-				<div class="user-modal-contents">
-					<div class="user-modal-content">
-						<div class="user-modal-content-left">
-							<div class="user-modal-content-img"></div>
-						</div>
-						<div class="user-modal-content-middle">
-							<p>testname</p>
-						</div>
-						<div class="user-modal-content-right">
-							<a href="" class="user-follow-btn">フォロー</a>
-						</div>
-					</div>
-				</div>
+<?php endforeach; ?>
 			</div>
 			<div class="user-modal-bottom">
 				<a href="">さらに表示</a>
@@ -197,6 +177,26 @@ try {
         <!-- jQueryの読み込み -->
          <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
     <script src="/app/app.js"></script>
+		<script>
+			 const httpRequest = new XMLHttpRequest();
+			 function iine(event, postId) {
+     const iine = event.parentNode.querySelector("span.count")
 
+     httpRequest.onreadystatechange = function(){
+        // ここでサーバーからの応答を処理します。
+        if (httpRequest.readyState === XMLHttpRequest.DONE) {
+            if (httpRequest.status === 200) {
+              const response = JSON.parse(httpRequest.responseText)
+              iine.innerText = response.fav_count 
+            } else {
+              alert('リクエストに問題が発生しました');
+            }
+        }
+     };
+      httpRequest.open('POST', 'http://localhost:8888/app/count.php', true);
+      httpRequest.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+      httpRequest.send(`post_id=${postId}`);
+    }
+		</script>
 </body>
 </html>

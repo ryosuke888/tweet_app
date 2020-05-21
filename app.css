@@ -130,7 +130,7 @@ header {
 	overflow-wrap: break-word;
 }
 .card-content-img {
-	background-image: url(image/profile/<?php foreach($stht as $row2) {echo $row2;} ?>);
+	background-image: url();
 	background-size: cover;
 	background-repeat: no-repeat;
 	background-position: center;
