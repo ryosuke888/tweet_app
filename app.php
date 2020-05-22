@@ -33,7 +33,7 @@ try {
 /* tweetを表示するためにデータベースへ接続 */
 try {
   $db = getDb();
-  $sql = 'select name, tweet, day, image_url from posts order by id desc';
+  $sql = 'select name, tweet, day, image_url, id from posts order by id desc';
   $stt = $db->query($sql);
   $stt->execute();
 } 
@@ -62,52 +62,52 @@ try {
 		<main>
 			<div class="test">
 				<div class="display">
-					<div class="tweet">
-						<div class="tweet-main-box">
-							<div class="tweet-main-left">
-								<div class="tweet-contents-img">
+						<div class="tweet">
+								<div class="tweet-main-box">
+										<div class="tweet-main-left">
+											<div class="tweet-contents-img">
+											</div>
+										</div>
+										<div class="tweet-main-right">
+												<form action="tweet.php" method="post" accept-charset="utf-8" class="main-form">
+												<input type="hidden" name="url" value="<?php echo $url ?>">
+												<input type="text" name="name" value="<?php echo $_SESSION['name']; ?>">
+												<textarea name="tweet" placeholder="What's happening?"></textarea>
+													<input type="submit" name="投稿" >
+												</form>
+										</div>
+										<button type="submit" class="heart2" id="heart2"> 
 								</div>
-							</div>
-							<div class="tweet-main-right">
-								<form action="tweet.php" method="post" accept-charset="utf-8" class="main-form">
-								<input type="hidden" name="url" value="<?php echo $url ?>">
-								<input type="text" name="name" value="<?php echo $_SESSION['name']; ?>">
-								<textarea name="tweet" placeholder="What's happening?"></textarea>
-									<input type="submit" name="投稿" >
-								</form>
-							</div>
 						</div>
-					</div>
-					<?php foreach( $stt as $row) : ?>
+<?php foreach( $stt as $row) : ?>
 						<!-- <form action="fav.php" method="post" accept-charset="utf-8"> -->
 					<div class="card">
-						<div class="card-content">
-							<div class="card-content-left">
-								<!-- <div class="card-content-img"></div> -->
-								<img src="image/profile/<?php echo $row['image_url']; ?>" alt="" height="50" width="50"> 
-							</div>
-							<div class="card-contents">
-								<div class="card-contents-name">
-									<h4><input type="hidden" name="name" value="<?php echo $row['name']; ?>" readonly></h4>
-									<h4><?php echo $row['name']; ?></h4>
-									<p><?php echo '<br />'. $row['day']; ?></p>
-								</div>
-								<div class="card-contents-tweet">
-									<input type="hidden" name="tweet" value="<?php echo $row['tweet']; ?>" readonly>
-									<p><?php echo $row['tweet']; ?></p>
-									<div class="iine">
-											<button onclick="iine(this, 1)" class="heart" id="heart"><a href="#"><i class="far fa-heart"></i></a></button>
-											<button type="submit" class="heart2" id="heart2">
-												<a href="#"><i class="fas fa-heart"></i></a>
-											</button>
-											<span class="count">0</span>
+							<div class="card-content">
+									<div class="card-content-left">
+										<!-- <div class="card-content-img"></div> -->
+											<img src="image/profile/<?php echo $row['image_url']; ?>" alt="" height="50" width="50"> 
 									</div>
-								</div>
+									<div class="card-contents">
+											<div class="card-contents-name">
+												<h4><input type="hidden" name="name" value="<?php echo $row['name']; ?>" readonly></h4>
+												<h4><?php echo $row['name']; ?></h4>
+												<p><?php echo '<br />'. $row['day']; ?></p>
+											</div>
+											<div class="card-contents-tweet">
+													<input type="hidden" name="tweet" value="<?php echo $row['tweet']; ?>" readonly>
+													<p><?php echo $row['tweet']; ?></p>
+													<div class="iine">
+															<button onclick="iine(this, <?php echo $row['id']; ?>)" class="heart" id="heart"><a href="#"><i class="far fa-heart"></i></a></button>
+																<a href="#"><i class="fas fa-heart"></i></a>
+															</button> 
+															<span class="count">0</span>
+													</div>
+											</div>
+									</div>
 							</div>
-						</div>
 					</div>
 					<!-- </form> -->
-					<?php endforeach; ?>
+<?php endforeach; ?>
 				</div>
 			</div>
 		</main>
@@ -119,9 +119,10 @@ try {
 					<h2>おすすめのユーザー</h2>
 				</div>
 			</div>
+			
 			<div class="user-modal-middle">
-<?php foreach( $stt as $row) : ?>
 				<div class="user-modal-contents">
+<?php foreach($stt as $row) : ?> 
 					<div class="user-modal-content">
 						<div class="user-modal-content-left">
 							<!-- <div class="user-modal-content-img"></div> -->
@@ -134,9 +135,11 @@ try {
 							<a href="" class="user-follow-btn">フォロー</a>
 						</div>
 					</div>
-				</div>
 <?php endforeach; ?>
+				</div>
+
 			</div>
+		
 			<div class="user-modal-bottom">
 				<a href="">さらに表示</a>
 			</div>
@@ -186,16 +189,17 @@ try {
         // ここでサーバーからの応答を処理します。
         if (httpRequest.readyState === XMLHttpRequest.DONE) {
             if (httpRequest.status === 200) {
-              const response = JSON.parse(httpRequest.responseText)
+              const response = JSON.parse(httpRequest.responseText)　 //json_decode() 
               iine.innerText = response.fav_count 
             } else {
               alert('リクエストに問題が発生しました');
             }
         }
-     };
+		 };
+		
       httpRequest.open('POST', 'http://localhost:8888/app/count.php', true);
       httpRequest.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-      httpRequest.send(`post_id=${postId}`);
+			httpRequest.send(`post_id=${postId}`);
     }
 		</script>
 </body>
