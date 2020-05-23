@@ -18,5 +18,9 @@ $(function() {
   	$('.reply-open').css('display', 'none');
     $('.reply-box').fadeIn();
   });
+  $('#reply-back').click(function() {
+  	$('.reply-box').css('display', 'none');
+    $('.reply-open').fadeIn();
+  });
   
 });

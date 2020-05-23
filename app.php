@@ -85,7 +85,7 @@ var_dump($stt);
 								</div>
 						</div>
 						<div class="display2">
-<?php foreach( $stt as $row) : ?>
+<?php foreach($stt as $row) : ?>
 					<div class="card">
 							<div class="card-content">
 									<div class="card-content-left">
@@ -115,11 +115,14 @@ var_dump($stt);
 							</div>
 							<div class="reply-box">
 									<form action="reply.php" method="post" accept-charset="utf-8"> 
-                        <p>返信してください</p>
+												<p>返信してください</p>
+												<button class="reply-back" id="reply-back">戻る</button>
                         <input type="hidden" name="id" value="<?php echo $row['id']; ?>">
                         <input type="text" name="message">
 												<input type="submit" value="送信">
 									</form>
+									
+									
 <!-- replyを表示するためにデータベースへ接続 -->
 <?php 
 											try {
@@ -233,4 +236,4 @@ var_dump($stt);
     }
 		</script>
 </body>
-</html>
+</html>	
