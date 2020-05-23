@@ -270,10 +270,18 @@ aside {
 	padding-left: 5px;
 	border-bottom: 1px solid lightgray;
 }
+.user-modal-middle {
+}
+.user-modal-contents {
+	overflow: scroll;
+	height: 250px;
+}
 .user-modal-content {
 	display: flex;
 	border-bottom: 1px solid lightgray;
 	padding: 10px 0;
+
+
 }
 .user-modal-content-left {
 	width: 60px;

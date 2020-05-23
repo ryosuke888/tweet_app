@@ -35,12 +35,23 @@ try {
   $db = getDb();
   $sql = 'select name, tweet, day, image_url, id from posts order by id desc';
   $stt = $db->query($sql);
- //   $stt->execute();
+
 } 
  catch (\Exception $e) {
   echo $e->getMessage() . PHP_EOL;
 }
-var_dump($stt);
+
+/* ユーザデータを表示するためにデータベースへ接続 */
+try {
+  $db = getDb();
+  $sql = 'select name from UserData order by id desc';
+  $stmt = $db->query($sql);
+
+} 
+ catch (\Exception $e) {
+  echo $e->getMessage() . PHP_EOL;
+}
+
 
 
 
@@ -121,8 +132,6 @@ var_dump($stt);
                         <input type="text" name="message">
 												<input type="submit" value="送信">
 									</form>
-									
-									
 <!-- replyを表示するためにデータベースへ接続 -->
 <?php 
 											try {
@@ -145,6 +154,7 @@ var_dump($stt);
 			</div>
 		</main>
 	</div>
+	<!-- フォロー機能実装 -->
 	<aside>
 		<div class="user-modal">
 			<div class="user-modal-top">
@@ -152,27 +162,31 @@ var_dump($stt);
 					<h2>おすすめのユーザー</h2>
 				</div>
 			</div>
-			
+				
 			<div class="user-modal-middle">
 				<div class="user-modal-contents">
-<?php foreach($stt as $row) : ?> 
+<?php $i = 0; ?>
+<?php foreach($stmt as $row) : ?> 
+<?php  if($i >= 4) : ?>
+<?php break; ?>
+<?php  else : ?>
 					<div class="user-modal-content">
-						<div class="user-modal-content-left">
-							<!-- <div class="user-modal-content-img"></div> -->
-							<img src="image/profile/<?php echo $row['image_url']; ?>" alt="" height="50" width="50">
-						</div>
-						<div class="user-modal-content-middle">
-							<p><?php echo $row['name']; ?></p>
-						</div>
-						<div class="user-modal-content-right">
-							<a href="" class="user-follow-btn">フォロー</a>
-						</div>
+							<div class="user-modal-content-left">
+									<!-- <div class="user-modal-content-img"></div> 
+									<img src="image/profile/<?php echo $row['image_url']; ?>" alt="" height="50" width="50"> -->
+							</div>
+							<div class="user-modal-content-middle">
+									<p><?php echo $row['name']; ?></p>
+							</div>
+							<div class="user-modal-content-right">
+									<a href="" class="user-follow-btn">フォロー</a>
+							</div>
 					</div>
+<?php $i++; ?>
+<?php endif ?>
 <?php endforeach; ?>
 				</div>
-
 			</div>
-		
 			<div class="user-modal-bottom">
 				<a href="">さらに表示</a>
 			</div>
