@@ -14,4 +14,9 @@ $(function() {
     $('#heart').fadeIn();
   });
   
+  $('#reply-open-btn').click(function() {
+  	$('.reply-open').css('display', 'none');
+    $('.reply-box').fadeIn();
+  });
+  
 });

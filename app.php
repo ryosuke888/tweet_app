@@ -35,11 +35,16 @@ try {
   $db = getDb();
   $sql = 'select name, tweet, day, image_url, id from posts order by id desc';
   $stt = $db->query($sql);
-  $stt->execute();
+ //   $stt->execute();
 } 
  catch (\Exception $e) {
   echo $e->getMessage() . PHP_EOL;
 }
+var_dump($stt);
+
+
+
+
 
 
 ?>
@@ -47,7 +52,7 @@ try {
 <html>
 <head>
 	<meta charset="utf-8">
-	<meta name="viewport" http-equiv="X-UA-Compatible" content="width=device-width, initial-scale=1.0">
+ 	<meta name="viewport" http-equiv="X-UA-Compatible" content="width=device-width, initial-scale=1.0">
 	<title>tweet</title>
 	<link rel="stylesheet" href="style.php">
 	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.0/css/all.css">	
@@ -79,8 +84,8 @@ try {
 										<button type="submit" class="heart2" id="heart2"> 
 								</div>
 						</div>
+						<div class="display2">
 <?php foreach( $stt as $row) : ?>
-						<!-- <form action="fav.php" method="post" accept-charset="utf-8"> -->
 					<div class="card">
 							<div class="card-content">
 									<div class="card-content-left">
@@ -105,9 +110,34 @@ try {
 											</div>
 									</div>
 							</div>
+							<div class="reply-open">
+									<button class="reply-open-btn" id="reply-open-btn">↓reply</button>
+							</div>
+							<div class="reply-box">
+									<form action="reply.php" method="post" accept-charset="utf-8"> 
+                        <p>返信してください</p>
+                        <input type="hidden" name="id" value="<?php echo $row['id']; ?>">
+                        <input type="text" name="message">
+												<input type="submit" value="送信">
+									</form>
+<!-- replyを表示するためにデータベースへ接続 -->
+<?php 
+											try {
+												$stht = $db->prepare('select message from reply where id = :id');
+												$stht->bindValue(':id', $row['id']);
+												$stht->execute();
+											 //$stt->fetch(PDO::FETCH_ASSOC);
+											} catch (\Exception $e) {
+												echo $e->getMessage() . PHP_EOL;
+											}
+?>
+											<?php foreach ($stht as $row2) : ?>
+    									<p><?php echo $row2['message']."<br>"; ?></p>
+ 											<?php endforeach; ?>
+							</div>
 					</div>
-					<!-- </form> -->
 <?php endforeach; ?>
+						</div>
 				</div>
 			</div>
 		</main>
