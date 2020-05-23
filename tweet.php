@@ -8,20 +8,15 @@ if (!empty($_POST["tweet"])) {
   $day = date("Y/m/d H:i:s");
  try {
   $db = getDb();
-  $stmt = $db->prepare('INSERT INTO Tweet(name, tweet, day) 
-    VALUES(?, ?, ?)');
-  $stmt->execute(array($_POST['name'], $_POST['tweet'], $day));
+  $stmt = $db->prepare('INSERT INTO posts(name, tweet, day, image_url) 
+    VALUES(?, ?, ?, ?)');
+  $stmt->execute(array($_POST['name'], $_POST['tweet'], $day, $_POST['url']));
   }  catch (\Exception $e) {
   echo $e->getMessage() . PHP_EOL;
 }
 
 }
 
-
-
-
-
-//header("Location: http://localhost:8888/app/app.php?url=[完了]");
 ?>
 
  <?php
