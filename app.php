@@ -40,6 +40,21 @@ try {
   echo $e->getMessage() . PHP_EOL;
 }
 
+
+/* retweetを表示するためにデータベースへ接続 */
+try {
+  $db = getDb();
+  $sql = 'select name, id from retweet';
+  $strt = $db->prepare($sql);
+  $strt->execute();
+  $row3 = $strt->fetch(PDO::FETCH_ASSOC);
+  $r_name= $row3['name'];
+} 
+ catch (\Exception $e) {
+  echo $e->getMessage() . PHP_EOL;
+}
+
+
 /* ユーザデータを表示するためにデータベースへ接続 */
 try {
   $db = getDb();
@@ -50,11 +65,6 @@ try {
  catch (\Exception $e) {
   echo $e->getMessage() . PHP_EOL;
 }
-
-
-
-
-
 
 
 ?>
@@ -105,6 +115,7 @@ try {
 									<div class="card-contents">
 											<div class="card-contents-name">
 												<h4><input type="hidden" name="name" value="<?php echo $row['name']; ?>" readonly></h4>
+												<p><?php echo $r_name; ?>よってリツイートにされました</p>
 												<h4><?php echo $row['name']; ?></h4>
 												<p><?php echo '<br />'. $row['day']; ?></p>
 											</div>
@@ -113,6 +124,7 @@ try {
 													<p><?php echo $row['tweet']; ?></p>
 													<div class="iine">
 															<button onclick="iine(this, <?php echo $row['id']; ?>)" class="heart" id="heart"><a href="#"><i class="far fa-heart"></i></a></button>
+															<button>
 																<a href="#"><i class="fas fa-heart"></i></a>
 															</button> 
 															<span class="count">0</span>
@@ -122,6 +134,13 @@ try {
 							</div>
 							<div class="reply-open">
 									<button class="reply-open-btn" id="reply-open-btn">↓reply</button>
+									<form action="retweet.php" method="post">
+									<input type="hidden" name="name" value="<?php echo $row['name']; ?>">
+									<input type="hidden" name="tweet" value="<?php echo $row['tweet']; ?>">
+									<input type="hidden" name="image" value="<?php echo $row['image_url']; ?>">
+									<input type="hidden" name="image" value="<?php echo $row['id']; ?>">
+									<input type="submit" value="リツイート">
+									</form>
 							</div>
 							<div class="reply-box">
 									<form action="reply.php" method="post" accept-charset="utf-8"> 
@@ -175,8 +194,10 @@ try {
 
 	try {
 		$db = getDb();
-		$sql = 'select name from follow';
-		$stft = $db->query($sql);
+		$sql = 'select name from follow where id = :id';
+		$stft = $db->prepare($sql);
+		$stft->bindValue(':id' ,$_SESSION['id']);
+		$stft->execute();
 	} 
 	 catch (\Exception $e) {
 		echo $e->getMessage() . PHP_EOL;
