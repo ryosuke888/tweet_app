@@ -9,7 +9,7 @@ require_once('login_confirm.php');
 
 
 if(isset($_SESSION['name'])){
-          echo "ようこそ、".$_SESSION['name']."さん！";
+					echo "ようこそ、".$_SESSION['name']."さん！";
         } else {
           header('Location:app_login.php');
           exit;
@@ -35,7 +35,6 @@ try {
   $db = getDb();
   $sql = 'select name, tweet, day, image_url, id from posts order by id desc';
   $stt = $db->query($sql);
-
 } 
  catch (\Exception $e) {
   echo $e->getMessage() . PHP_EOL;
@@ -44,7 +43,7 @@ try {
 /* ユーザデータを表示するためにデータベースへ接続 */
 try {
   $db = getDb();
-  $sql = 'select name from UserData order by id desc';
+  $sql = 'select name, id from UserData order by id desc';
   $stmt = $db->query($sql);
 
 } 
@@ -167,22 +166,44 @@ try {
 				<div class="user-modal-contents">
 <?php $i = 0; ?>
 <?php foreach($stmt as $row) : ?> 
-<?php  if($i >= 4) : ?>
+<?php  if($i >= 15) : ?>
 <?php break; ?>
 <?php  else : ?>
-					<div class="user-modal-content">
+<?php if($row['id'] != $_SESSION['id']): ?><!--ログインユーザ以外を表示
+	followテーブルに接続し、フォローしたユーザを表示 -->
+	<?php
+
+	try {
+		$db = getDb();
+		$sql = 'select name from follow';
+		$stft = $db->query($sql);
+	} 
+	 catch (\Exception $e) {
+		echo $e->getMessage() . PHP_EOL;
+	}
+	?>
+<?php foreach($stft as $row2) : ?> 
+<?php if($row['name'] != $row2['name']) : ?>
+	<div class="user-modal-content">
+							<form action="follow.php" method="post">
 							<div class="user-modal-content-left">
 									<!-- <div class="user-modal-content-img"></div> 
 									<img src="image/profile/<?php echo $row['image_url']; ?>" alt="" height="50" width="50"> -->
 							</div>
 							<div class="user-modal-content-middle">
 									<p><?php echo $row['name']; ?></p>
+								<input type="hidden" name="name" value="<?php echo $row['name']; ?>">
+								<input type="hidden" name="id" value="<?php echo$_SESSION['id']; ?>">
 							</div>
 							<div class="user-modal-content-right">
-									<a href="" class="user-follow-btn">フォロー</a>
+									<input type="submit" class="user-follow-btn" value="フォロー">
 							</div>
+						</form>
 					</div>
-<?php $i++; ?>
+					<?php $i++; ?>
+<?php endif ?>
+<?php endforeach; ?>
+<?php endif ?>
 <?php endif ?>
 <?php endforeach; ?>
 				</div>
