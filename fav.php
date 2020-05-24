@@ -28,9 +28,7 @@ try {
   } catch(PDOException $e) {
     print "エラーメッセージ：{$e->getMessage()}";
   }
-
-
-
+  
 try {
   $stt = $db->prepare('select * from Fav');
   $stt->execute(array($name, $tweet));

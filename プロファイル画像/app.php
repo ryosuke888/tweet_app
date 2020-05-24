@@ -2,7 +2,6 @@
 
 ini_set('display_errors', 'on');
 error_reporting(E_ALL & ~E_NOTICE);
-error_reporting(E_ALL);
 
 require_once('DbManager.php');
 require_once('send.php');
@@ -10,54 +9,55 @@ require_once('login_confirm.php');
 
 
 if(isset($_SESSION['name'])){
-          echo "ようこそ、".$_SESSION['name']."さん！";
-        } else {
-          header('Location:app_login.php');
-          exit;
-        }
+	echo "ようこそ、".$_SESSION['name']."さん！";
+} else {
+	header('Location:app_login.php');
+	exit;
+}
 
 
 try {
-  $db = getDb();
-  $sql = 'select name from UserData';
-  $stmt = $db->query($sql);
-  $stmt->execute();
+	$db = getDb();
+	$sql = 'select name from UserData';
+	$stmt = $db->query($sql);
+	$stmt->execute();
 } 
- catch (\Exception $e) {
-  echo $e->getMessage() . PHP_EOL;
+catch (\Exception $e) {
+	echo $e->getMessage() . PHP_EOL;
 }
 
 /* 画像をアップロードするためにデータベースへ接続 */
 try {
-  $db = getDb();
-  $sql = 'select url from ImageUrl';
-  $stlt = $db->query($sql);
-  $stlt->execute();
+	$db = getDb();
+	$sql = 'select url from ImageUrl';
+	$stlt = $db->query($sql);
+	$stlt->execute();
 } 
- catch (\Exception $e) {
-  echo $e->getMessage() . PHP_EOL;
+catch (\Exception $e) {
+	echo $e->getMessage() . PHP_EOL;
 }
 
 
 try {
-  $db = getDb();
-  $sql = 'select name, tweet, day from Tweet';
-  $stt = $db->query($sql);
-  $stt->execute();
+	$db = getDb();
+	$sql = 'select name, tweet, day from Tweet';
+	$stt = $db->query($sql);
+	$stt->execute();
 } 
- catch (\Exception $e) {
-  echo $e->getMessage() . PHP_EOL;
+catch (\Exception $e) {
+	echo $e->getMessage() . PHP_EOL;
 }
 
 
 ?>
 <!DOCTYPE html>
 <html>
-<head>
-	<meta charset="utf-8">
-	<meta name="viewport" http-equiv="X-UA-Compatible" content="width=device-width, initial-scale=1.0">
-	<title>tweet</title>
-	<link rel="stylesheet" href="app.css">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" http-equiv="X-UA-Compatible" content="width=device-width, initial-scale=1.0">
+		<title>tweet</title>
+		<link rel="stylesheet" href="app.css">
+		error_reporting(E_ALL);
 	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.0/css/all.css">	
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 </head>
@@ -65,10 +65,7 @@ try {
 <div class="screen">
 	<div class="box">
 		<header>
-			<h2 class="home">Home</h2> 
-			<?php foreach( $stlt as $row) : ?>
-				<img src="" alt="">
-			<?php endforeach; ?>
+		    <h2 class="home">Home</h2> 
 		</header>
 		<main>
 			<div class="test">
@@ -77,9 +74,7 @@ try {
 						<div class="tweet-main-box">
 							<div class="tweet-main-left">
 								<div class="tweet-contents-img">
-
 								</div>
-								
 							</div>
 							<div class="tweet-main-right">
 								<form action="tweet.php" method="post" accept-charset="utf-8" class="main-form">

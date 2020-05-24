@@ -31,6 +31,7 @@ if($_SERVER["REQUEST_METHOD"]==="POST" &&  $_SERVER['HTTP_REFERER']==="http://lo
     foreach ($stmt as $row) {
         if ($row['email'] == $email && $row['password'] == $password) {
            $_SESSION['name']=$row['name'];
+           $_SESSION['id']=$row['id'];
             header("Location:app.php");
         } else {
           echo 'メールアドレス又はパスワードが間違っています。';
