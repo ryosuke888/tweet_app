@@ -271,13 +271,12 @@ aside {
 	border-bottom: 1px solid lightgray;
 }
 .user-modal-middle {
-}
-.user-modal-contents {
-	overflow: scroll;
-	height: 250px;
+	overflow-x: scroll;
+	height: 300px;
 }
 .user-modal-content {
 	display: flex;
+	height: 71px;
 	border-bottom: 1px solid lightgray;
 	padding: 10px 0;
 

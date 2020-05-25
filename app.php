@@ -4,6 +4,7 @@ ini_set('display_errors', 'on');
 error_reporting(E_ALL & ~E_NOTICE);
 error_reporting(E_ALL);
 
+//session_start();
 require_once('DbManager.php');
 require_once('login_confirm.php');
 
@@ -33,8 +34,13 @@ try {
 /* tweetを表示するためにデータベースへ接続 */
 try {
   $db = getDb();
-  $sql = 'select name, tweet, day, image_url, id, fav from posts order by id desc';
-  $stt = $db->query($sql);
+  $sql = 'select name, tweet, day, image_url, id, fav from posts where user_id = :id or user_id = any(
+		select user_id2 from follow where user_id = :id) order by id desc';
+	$stt = $db->prepare($sql);
+	$stt->bindValue(':id' ,$_SESSION['id']);
+	$stt->execute();
+
+  //$stt->fetch(PDO::FETCH_ASSOC);
 } 
  catch (\Exception $e) {
   echo $e->getMessage() . PHP_EOL;
@@ -60,7 +66,6 @@ try {
   $db = getDb();
   $sql = 'select name, id from UserData order by id desc';
   $stmt = $db->query($sql);
-
 } 
  catch (\Exception $e) {
   echo $e->getMessage() . PHP_EOL;
@@ -96,9 +101,10 @@ try {
 										<div class="tweet-main-right">
 												<form action="tweet.php" method="post" accept-charset="utf-8" class="main-form">
 												<input type="hidden" name="url" value="<?php echo $url ?>">
-												<input type="text" name="name" value="<?php echo $_SESSION['name']; ?>">
+												<input type="hidden" name="user_id" value="<?php echo $_SESSION['id']; ?>">
+												<input type="text" name="name" value="<?php echo $_SESSION['name']; ?>" readonly>
 												<textarea name="tweet" placeholder="What's happening?"></textarea>
-													<input type="submit" name="投稿" >
+												<input type="submit" name="投稿" >
 												</form>
 										</div>
 										<button type="submit" class="heart2" id="heart2"> 
@@ -175,14 +181,13 @@ try {
 	<!-- フォロー機能実装 -->
 	<aside>
 		<div class="user-modal">
-			<div class="user-modal-top">
-				<div class="user-modal-title">
-					<h2>おすすめのユーザー</h2>
+				<div class="user-modal-top">
+					<div class="user-modal-title">
+						<h2>おすすめのユーザー</h2>
+					</div>
 				</div>
-			</div>
 				
-			<div class="user-modal-middle">
-				<div class="user-modal-contents">
+				<div class="user-modal-middle">
 <?php
 
 try {
@@ -197,11 +202,7 @@ catch (\Exception $e) {
 	echo $e->getMessage() . PHP_EOL;
 }
 ?>
-<?php $i = 0; ?>
 <?php foreach($stft as $row) : ?> 
-		<?php  if($i >= 10) : ?>
-				<?php break; ?>
-		<?php  else : ?>
 				<?php if($row['id'] != $_SESSION['id']): ?><!--ログインユーザ以外を表示
 	followテーブルに接続し、フォローしたユーザを表示 -->
 										<div class="user-modal-content">
@@ -218,15 +219,9 @@ catch (\Exception $e) {
 														<button onclick="follow(this, <?php echo $row['id']; ?>)" class="user-follow-btn">フォロー</button>
 												</div>
 										</div>
-										<?php $i++; ?>
 				<?php endif ?>
-		<?php endif ?>
 <?php endforeach; ?>
 				</div>
-			</div>
-			<div class="user-modal-bottom">
-				<a href="">さらに表示</a>
-			</div>
 		</div>
 	</aside>
 	<nav>
@@ -322,8 +317,9 @@ catch (\Exception $e) {
         // ここでサーバーからの応答を処理します。
 							if (httpRequest.readyState === XMLHttpRequest.DONE) {
 									if (httpRequest.status === 200) {
-										const response = JSON.parse(httpRequest.responseText)　 //json_decode() 
+										//const response = JSON.parse(httpRequest.responseText)　 //json_decode() 
 										// follow.innerText = response.post_id
+										break;
 									} else {
 										alert('リクエストに問題が発生しました');
 									}

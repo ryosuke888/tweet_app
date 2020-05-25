@@ -8,9 +8,9 @@ if (!empty($_POST["tweet"])) {
   $day = date("Y/m/d H:i:s");
  try {
   $db = getDb();
-  $stmt = $db->prepare('INSERT INTO posts(name, tweet, day, image_url) 
-    VALUES(?, ?, ?, ?)');
-  $stmt->execute(array($_POST['name'], $_POST['tweet'], $day, $_POST['url']));
+  $stmt = $db->prepare('INSERT INTO posts(name, tweet, day, image_url, user_id) 
+    VALUES(?, ?, ?, ?, ?)');
+  $stmt->execute(array($_POST['name'], $_POST['tweet'], $day, $_POST['url'], $_POST['user_id']));
   }  catch (\Exception $e) {
   echo $e->getMessage() . PHP_EOL;
 }

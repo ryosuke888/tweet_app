@@ -30,7 +30,6 @@ $postId = $_POST['post_id'];
         //$stnt->bindValue(':postId', $postId);
         //$stnt->bindValue(':id', $id);
         $stnt->execute(array($name, $postId, $id));
-        
         }  catch (\Exception $e) {
         echo $e->getMessage() . PHP_EOL;
       }
@@ -38,6 +37,6 @@ $postId = $_POST['post_id'];
 
 
 echo json_encode([
-  'post_id' => $postId
+  //'post_id' => $postId
 ]);
 
