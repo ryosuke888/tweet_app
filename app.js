@@ -5,15 +5,20 @@ $(function() {
   $('.tweet-modal-close').click(function() {
     $('#tweet-modal').fadeOut();
   });
+
+/*
+
   $('.heart').click(function() {
-  	$('#heart').css('display', 'none');
-    $('#heart2').fadeIn();
+  	$('.heart').css('display', 'none');
+    $('.heart2').fadeIn();
   });
   $('.heart2').click(function() {
-  	$('#heart2').css('display', 'none');
-    $('#heart').fadeIn();
+  	$('.heart2').css('display', 'none');
+    $('.heart').fadeIn();
   });
   
+*/
+
   $('#reply-open-btn').click(function() {
   	$('.reply-open').css('display', 'none');
     $('.reply-box').fadeIn();

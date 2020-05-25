@@ -33,7 +33,7 @@ try {
 /* tweetを表示するためにデータベースへ接続 */
 try {
   $db = getDb();
-  $sql = 'select name, tweet, day, image_url, id from posts order by id desc';
+  $sql = 'select name, tweet, day, image_url, id, fav from posts order by id desc';
   $stt = $db->query($sql);
 } 
  catch (\Exception $e) {
@@ -123,11 +123,11 @@ try {
 													<input type="hidden" name="tweet" value="<?php echo $row['tweet']; ?>" readonly>
 													<p><?php echo $row['tweet']; ?></p>
 													<div class="iine">
-															<button onclick="iine(this, <?php echo $row['id']; ?>)" class="heart" id="heart"><a href="#"><i class="far fa-heart"></i></a></button>
-															<button>
+															<button onclick="iine(this, <?php echo $row['id']; ?>)" class="heart"><a href="#"><i class="far fa-heart"></i></a></button>
+															<button onclick="undoIine(this, <?php echo $row['id']; ?>)" class="heart2">
 																<a href="#"><i class="fas fa-heart"></i></a>
 															</button> 
-															<span class="count">0</span>
+															<span class="count"><?php echo $row['fav']; ?></span>
 													</div>
 											</div>
 									</div>
@@ -183,49 +183,44 @@ try {
 				
 			<div class="user-modal-middle">
 				<div class="user-modal-contents">
-<?php $i = 0; ?>
-<?php foreach($stmt as $row) : ?> 
-<?php  if($i >= 15) : ?>
-<?php break; ?>
-<?php  else : ?>
-<?php if($row['id'] != $_SESSION['id']): ?><!--ログインユーザ以外を表示
-	followテーブルに接続し、フォローしたユーザを表示 -->
-	<?php
+<?php
 
-	try {
-		$db = getDb();
-		$sql = 'select name from follow where id = :id';
-		$stft = $db->prepare($sql);
-		$stft->bindValue(':id' ,$_SESSION['id']);
-		$stft->execute();
-	} 
-	 catch (\Exception $e) {
-		echo $e->getMessage() . PHP_EOL;
-	}
-	?>
-<?php foreach($stft as $row2) : ?> 
-<?php if($row['name'] != $row2['name']) : ?>
-	<div class="user-modal-content">
-							<form action="follow.php" method="post">
-							<div class="user-modal-content-left">
-									<!-- <div class="user-modal-content-img"></div> 
-									<img src="image/profile/<?php echo $row['image_url']; ?>" alt="" height="50" width="50"> -->
-							</div>
-							<div class="user-modal-content-middle">
-									<p><?php echo $row['name']; ?></p>
-								<input type="hidden" name="name" value="<?php echo $row['name']; ?>">
-								<input type="hidden" name="id" value="<?php echo$_SESSION['id']; ?>">
-							</div>
-							<div class="user-modal-content-right">
-									<input type="submit" class="user-follow-btn" value="フォロー">
-							</div>
-						</form>
-					</div>
-					<?php $i++; ?>
-<?php endif ?>
-<?php endforeach; ?>
-<?php endif ?>
-<?php endif ?>
+try {
+	$db = getDb();
+	$sql = 'select * from UserData where name not in (
+		select name from follow where user_id = :id)';
+	$stft = $db->prepare($sql);
+	$stft->bindValue(':id' ,$_SESSION['id']);
+	$stft->execute();
+} 
+catch (\Exception $e) {
+	echo $e->getMessage() . PHP_EOL;
+}
+?>
+<?php $i = 0; ?>
+<?php foreach($stft as $row) : ?> 
+		<?php  if($i >= 10) : ?>
+				<?php break; ?>
+		<?php  else : ?>
+				<?php if($row['id'] != $_SESSION['id']): ?><!--ログインユーザ以外を表示
+	followテーブルに接続し、フォローしたユーザを表示 -->
+										<div class="user-modal-content">
+												<div class="user-modal-content-left">
+														<!-- <div class="user-modal-content-img"></div> 
+														<img src="image/profile/<?php echo $row['image_url']; ?>" alt="" height="50" width="50"> -->
+												</div>
+												<div class="user-modal-content-middle">
+														<p><?php echo $row['name']; ?></p>
+													<!-- <input type="hidden" name="name" value="<?php echo $row['name']; ?>">
+													<input type="hidden" name="id" value="<?php echo$_SESSION['id']; ?>"> -->
+												</div>
+												<div class="user-modal-content-right">
+														<button onclick="follow(this, <?php echo $row['id']; ?>)" class="user-follow-btn">フォロー</button>
+												</div>
+										</div>
+										<?php $i++; ?>
+				<?php endif ?>
+		<?php endif ?>
 <?php endforeach; ?>
 				</div>
 			</div>
@@ -270,26 +265,74 @@ try {
          <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
     <script src="/app/app.js"></script>
 		<script>
-			 const httpRequest = new XMLHttpRequest();
+			 //いいね機能実装
 			 function iine(event, postId) {
-     const iine = event.parentNode.querySelector("span.count")
-
-     httpRequest.onreadystatechange = function(){
+				const httpRequest = new XMLHttpRequest();
+     			const iine = event.parentNode.querySelector("span.count")
+					 event.style.display = "none";
+					 event.parentNode.querySelector("button.heart2").style.display = "inline-block"; 
+					 
+     			httpRequest.onreadystatechange = function(){
         // ここでサーバーからの応答を処理します。
-        if (httpRequest.readyState === XMLHttpRequest.DONE) {
-            if (httpRequest.status === 200) {
-              const response = JSON.parse(httpRequest.responseText)　 //json_decode() 
-              iine.innerText = response.fav_count 
-            } else {
-              alert('リクエストに問題が発生しました');
-            }
-        }
-		 };
-		
-      httpRequest.open('POST', 'http://localhost:8888/app/count.php', true);
-      httpRequest.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-			httpRequest.send(`post_id=${postId}`);
-    }
+							if (httpRequest.readyState === XMLHttpRequest.DONE) {
+									if (httpRequest.status === 200) {
+										const response = JSON.parse(httpRequest.responseText)　 //json_decode() 
+										iine.innerText = response.fav_count 
+									} else {
+										alert('リクエストに問題が発生しました');
+									}
+							}
+		 			};
+					httpRequest.open('POST', 'http://localhost:8888/app/count.php', true);
+					httpRequest.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+					httpRequest.send(`post_id=${postId}`);
+				}
+				
+				function undoIine(event, postId) {
+					const httpRequest = new XMLHttpRequest();
+					const iine = event.parentNode.querySelector("span.count")
+
+							event.parentNode.querySelector("button.heart2").style.display = "none";
+							event.parentNode.querySelector("button.heart").style.display = "inline-block"; 
+							
+							httpRequest.onreadystatechange = function(){
+        // ここでサーバーからの応答を処理します。
+							if (httpRequest.readyState === XMLHttpRequest.DONE) {
+									if (httpRequest.status === 200) {
+										const response = JSON.parse(httpRequest.responseText)　 //json_decode() 
+										iine.innerText = response.fav_count 
+									} else {
+										alert('リクエストに問題が発生しました');
+									}
+							}
+		 			};
+					httpRequest.open('POST', 'http://localhost:8888/app/decrement.php', true);
+					httpRequest.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+					httpRequest.send(`post_id=${postId}`);
+					}
+
+
+					//フォロー機能実装
+			 function follow(event, postId) {
+				const httpRequest = new XMLHttpRequest();
+     		 //const follow = event.parenNode;//.querySelector("button.user-follow-btn")
+					event.parentNode.parentNode.style.display = "none";
+
+     			httpRequest.onreadystatechange = function(){
+        // ここでサーバーからの応答を処理します。
+							if (httpRequest.readyState === XMLHttpRequest.DONE) {
+									if (httpRequest.status === 200) {
+										const response = JSON.parse(httpRequest.responseText)　 //json_decode() 
+										// follow.innerText = response.post_id
+									} else {
+										alert('リクエストに問題が発生しました');
+									}
+							}
+		 			};
+					httpRequest.open('POST', 'http://localhost:8888/app/follow.php', true);
+					httpRequest.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+					httpRequest.send(`post_id=${postId}`);
+				}
 		</script>
 </body>
 </html>	
