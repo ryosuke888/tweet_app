@@ -72,6 +72,21 @@ try {
 }
 
 
+
+/* フォローしていないフォロー一覧を取得するためのデータベースへ接続 */
+try {
+	$db = getDb();
+	$sql = 'select * from UserData where name not in (
+		select name from follow where user_id = :id)';
+	$stft = $db->prepare($sql);
+	$stft->bindValue(':id' ,$_SESSION['id']);
+	$stft->execute();
+} 
+catch (\Exception $e) {
+	echo $e->getMessage() . PHP_EOL;
+}
+
+
 ?>
 <!DOCTYPE html>
 <html>
@@ -107,7 +122,6 @@ try {
 												<input type="submit" name="投稿" >
 												</form>
 										</div>
-										<button type="submit" class="heart2" id="heart2"> 
 								</div>
 						</div>
 						<div class="display2">
@@ -137,7 +151,23 @@ try {
 													</div>
 											</div>
 									</div>
+									<div class="delete">
+														<button onclick="del(this, <?php echo $row['id']; ?>)" class="delete-btn">削除</button>
+									</div>
 							</div>
+							<?php 
+							/* replyを表示するためにデータベースへ接続 */
+
+try {
+	$stht = $db->prepare('select message from reply where id = :id');
+	$stht->bindValue(':id', $row['id']);
+	$stht->execute();
+	//$stt->fetch(PDO::FETCH_ASSOC);
+} catch (\Exception $e) {
+	echo $e->getMessage() . PHP_EOL;
+}
+							
+							?>
 							<div class="reply-open">
 									<button class="reply-open-btn" id="reply-open-btn">↓reply</button>
 									<form action="retweet.php" method="post">
@@ -156,17 +186,6 @@ try {
                         <input type="text" name="message">
 												<input type="submit" value="送信">
 									</form>
-<!-- replyを表示するためにデータベースへ接続 -->
-<?php 
-											try {
-												$stht = $db->prepare('select message from reply where id = :id');
-												$stht->bindValue(':id', $row['id']);
-												$stht->execute();
-											 //$stt->fetch(PDO::FETCH_ASSOC);
-											} catch (\Exception $e) {
-												echo $e->getMessage() . PHP_EOL;
-											}
-?>
 											<?php foreach ($stht as $row2) : ?>
     									<p><?php echo $row2['message']."<br>"; ?></p>
  											<?php endforeach; ?>
@@ -188,20 +207,6 @@ try {
 				</div>
 				
 				<div class="user-modal-middle">
-<?php
-
-try {
-	$db = getDb();
-	$sql = 'select * from UserData where name not in (
-		select name from follow where user_id = :id)';
-	$stft = $db->prepare($sql);
-	$stft->bindValue(':id' ,$_SESSION['id']);
-	$stft->execute();
-} 
-catch (\Exception $e) {
-	echo $e->getMessage() . PHP_EOL;
-}
-?>
 <?php foreach($stft as $row) : ?> 
 				<?php if($row['id'] != $_SESSION['id']): ?><!--ログインユーザ以外を表示
 	followテーブルに接続し、フォローしたユーザを表示 -->
@@ -329,6 +334,30 @@ catch (\Exception $e) {
 					httpRequest.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
 					httpRequest.send(`post_id=${postId}`);
 				}
+
+					//削除機能実装
+					function del(event, postId) {
+				const httpRequest = new XMLHttpRequest();
+     		 //const follow = event.parenNode;//.querySelector("button.user-follow-btn")
+					event.parentNode.parentNode.parentNode.style.display = "none";
+
+     			httpRequest.onreadystatechange = function(){
+        // ここでサーバーからの応答を処理します。
+							if (httpRequest.readyState === XMLHttpRequest.DONE) {
+									if (httpRequest.status === 200) {
+										//const response = JSON.parse(httpRequest.responseText)　 //json_decode() 
+										// follow.innerText = response.post_id
+										break;
+									} else {
+										alert('リクエストに問題が発生しました');
+									}
+							}
+		 			};
+					httpRequest.open('POST', 'http://localhost:8888/app/delete.php', true);
+					httpRequest.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+					httpRequest.send(`post_id=${postId}`);
+				}
+
 		</script>
 </body>
 </html>	

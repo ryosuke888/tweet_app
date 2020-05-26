@@ -25,9 +25,7 @@ try {
 
  }
 
-?>
 
-<?php
-header("Location:app.php");
-
-?>
+ echo json_encode([
+  //'post_id' => $postId
+]);

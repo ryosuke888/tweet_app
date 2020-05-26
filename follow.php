@@ -8,8 +8,7 @@ error_reporting(E_ALL);
 
 
 $postId = $_POST['post_id'];
- //var_dump($postId);
- $id = $_SESSION['id'];
+$id = $_SESSION['id'];
 
     try {
       $db = getDb();
@@ -26,9 +25,6 @@ $postId = $_POST['post_id'];
       try {
         $db = getDb();
         $stnt = $db->prepare('INSERT INTO follow(name, user_id2, user_id) value(?, ?, ?)');
-       // $stnt->bindValue(':name', $name);
-        //$stnt->bindValue(':postId', $postId);
-        //$stnt->bindValue(':id', $id);
         $stnt->execute(array($name, $postId, $id));
         }  catch (\Exception $e) {
         echo $e->getMessage() . PHP_EOL;
