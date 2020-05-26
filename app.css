@@ -251,11 +251,11 @@ nav ul {
 .form input {
 	margin-left: 300px;
 }
-
-/* aside */
-aside {
-
+.rewtweet_p {
+	display: none;
 }
+/* aside */
+
 .user-modal {
 	background-color: gray;
 	border-radius: 5%;;

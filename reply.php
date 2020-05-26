@@ -10,7 +10,7 @@ require_once('DbManager.php');
 
 $id = $_POST['id'];
 $message = $_POST['message'];
-// var_dump($id);
+
 
  if (!empty($_POST["message"])) {
 try {
@@ -25,7 +25,9 @@ try {
 
  }
 
+?>
 
- echo json_encode([
-  //'post_id' => $postId
-]);
+<?php
+header("Location:app.php");
+
+?>

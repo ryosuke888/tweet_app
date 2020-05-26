@@ -34,7 +34,7 @@ try {
 /* tweetを表示するためにデータベースへ接続 */
 try {
   $db = getDb();
-  $sql = 'select name, tweet, day, image_url, id, fav from posts where user_id = :id or user_id = any(
+  $sql = 'select name, tweet, day, image_url, id, fav, retweet_name from posts where user_id = :id or user_id = any(
 		select user_id2 from follow where user_id = :id) order by id desc';
 	$stt = $db->prepare($sql);
 	$stt->bindValue(':id' ,$_SESSION['id']);
@@ -135,7 +135,9 @@ catch (\Exception $e) {
 									<div class="card-contents">
 											<div class="card-contents-name">
 												<h4><input type="hidden" name="name" value="<?php echo $row['name']; ?>" readonly></h4>
-												<p><?php echo $r_name; ?>よってリツイートにされました</p>
+												<?php if($row['retweet_name']) : ?>
+														<p><?php echo $row['retweet_name']."Retweeted"; ?></p>
+												<?php endif; ?>
 												<h4><?php echo $row['name']; ?></h4>
 												<p><?php echo '<br />'. $row['day']; ?></p>
 											</div>
@@ -170,13 +172,8 @@ try {
 							?>
 							<div class="reply-open">
 									<button class="reply-open-btn" id="reply-open-btn">↓reply</button>
-									<form action="retweet.php" method="post">
-									<input type="hidden" name="name" value="<?php echo $row['name']; ?>">
-									<input type="hidden" name="tweet" value="<?php echo $row['tweet']; ?>">
-									<input type="hidden" name="image" value="<?php echo $row['image_url']; ?>">
-									<input type="hidden" name="image" value="<?php echo $row['id']; ?>">
-									<input type="submit" value="リツイート">
-									</form>
+									<button onclick="retweet(this, <?php echo $row['id']; ?>)">リツイート</button>
+									<p class="rewtweet_p"></p>
 							</div>
 							<div class="reply-box">
 									<form action="reply.php" method="post" accept-charset="utf-8"> 
@@ -358,6 +355,28 @@ try {
 					httpRequest.send(`post_id=${postId}`);
 				}
 
+
+	//リツイート機能実装
+	function retweet(event, postId) {
+				const httpRequest = new XMLHttpRequest();
+				const retweet = event.parentNode.querySelector("p.rewtweet_p")
+
+     			httpRequest.onreadystatechange = function(){
+        // ここでサーバーからの応答を処理します。
+							if (httpRequest.readyState === XMLHttpRequest.DONE) {
+									if (httpRequest.status === 200) {
+										const response = JSON.parse(httpRequest.responseText)　 //json_decode() 
+										retweet.innerText = response.retweet_name 
+										event.parentNode.querySelector("p.rewtweet_p").style.display = "block";
+									} else {
+										alert('リクエストに問題が発生しました');
+									}
+							}
+		 			};
+					httpRequest.open('POST', 'http://localhost:8888/app/retweet.php', true);
+					httpRequest.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+					httpRequest.send(`post_id=${postId}`);
+				}
 		</script>
 </body>
 </html>	
