@@ -1,3 +1,4 @@
+
 /* 全体 */
 html {
 	height: 100%;
@@ -56,7 +57,13 @@ header {
 }
 .display {
 	background-color: black;
- 	width: 100%;
+	 width: 100%;
+	 height: 560px;
+}
+.display2 {
+	width: 100%;
+	 height: 100%;
+	 overflow: scroll;
 }
 /* tweet */
 .tweet {
@@ -118,8 +125,8 @@ header {
 	padding-right: 60px;
 	width: 100%;
 }
-.heart2 {
-	display: block;
+.heart {
+	display: inline-block;
 }
 .heart2 {
 	display: none;
@@ -129,7 +136,7 @@ header {
 	overflow-wrap: break-word;
 }
 .card-content-img {
-	background-image: url(IMG_1.jpeg);
+	background-image: url();
 	background-size: cover;
 	background-repeat: no-repeat;
 	background-position: center;
@@ -137,6 +144,19 @@ header {
 	height: 50px;
 	width: 50px;
 }
+.card-content-left img {
+	border-radius: 50%;
+}
+.reply-open {
+
+}
+.reply-box {
+	display: none;
+	width: 100%;
+	height: 100px;
+	overflow: scroll;
+}
+
 /* nav */
 nav ul {
 	padding-top: 50px;
@@ -188,6 +208,16 @@ nav ul {
 	left: 35%;
 	z-index: 1000;
 }
+.tweet-contents-img {
+	background-image: url(image/profile/<?php echo $url; ?>);
+	background-size: cover;
+	background-repeat: no-repeat;
+	background-position: center;
+	border-radius: 50%;
+	height: 50px;
+	width: 50px;
+}
+
 .tweet-modal-close {
 	border-bottom: 1px solid gray;
 }
@@ -208,15 +238,7 @@ nav ul {
 	width: 60px;
 	padding: 5px;
 }
-.tweet-contents-img {
-	background-image: url(IMG_1.jpeg);
-	background-size: cover;
-	background-repeat: no-repeat;
-	background-position: center;
-	border-radius: 50%;
-	height: 50px;
-	width: 50px;
-}
+
 .form {
 	height: 100%;
 	width: 100%;
@@ -229,11 +251,11 @@ nav ul {
 .form input {
 	margin-left: 300px;
 }
-
-/* aside */
-aside {
-
+.rewtweet_p {
+	display: none;
 }
+/* aside */
+
 .user-modal {
 	background-color: gray;
 	border-radius: 5%;;
@@ -248,27 +270,23 @@ aside {
 	padding-left: 5px;
 	border-bottom: 1px solid lightgray;
 }
+.user-modal-middle {
+	overflow-x: scroll;
+	height: 300px;
+}
 .user-modal-content {
 	display: flex;
+	height: 71px;
 	border-bottom: 1px solid lightgray;
 	padding: 10px 0;
+
+
 }
 .user-modal-content-left {
 	width: 60px;
 	padding: 5px;
 }
-.user-modal-content-img {
-	background-image: url(IMG_1.jpeg);
-	background-size: cover;
-	background-repeat: no-repeat;
-	background-position: center;
-	border-radius: 50%;
-	height: 50px;
-	width: 50px;
-}
-.user-modal-content-middle {
 
-}
 .user-modal-content-right {
 	margin-left: 85px;
 	padding-top: 10px;
