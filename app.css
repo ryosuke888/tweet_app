@@ -82,6 +82,9 @@ header {
 	padding-left: 5px;
 	padding-top: 5px;
 }
+.tweet-main-left img {
+	border-radius: 50%;
+}
 .tweet-main-right {
 	width: 100%;
 }

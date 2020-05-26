@@ -19,12 +19,12 @@ if(isset($_SESSION['name'])){
 /* 画像をアップロードするためにデータベースへ接続 */
 try {
   $db = getDb();
-  $sql = 'select url from ImageUrl where name = :name ';
+  $sql = 'select url from ImageUrl where user_id = :id ';
   $stlt = $db->prepare($sql);
-  $stlt->bindValue(':name'  ,$_SESSION['name']);
+  $stlt->bindValue(':id'  ,$_SESSION['id']);
   $stlt->execute();
   $row = $stlt->fetch(PDO::FETCH_ASSOC);
-  $url= $row['url'];
+	$url= $row['url'];
 } 
  catch (\Exception $e) {
   echo $e->getMessage() . PHP_EOL;
@@ -34,27 +34,12 @@ try {
 /* tweetを表示するためにデータベースへ接続 */
 try {
   $db = getDb();
-  $sql = 'select name, tweet, day, image_url, id, fav, retweet_name from posts where user_id = :id or user_id = any(
+  $sql = 'select name, tweet, day, image_url, id, fav, retweet_name, user_id from posts where user_id = :id or user_id = any(
 		select user_id2 from follow where user_id = :id) order by id desc';
 	$stt = $db->prepare($sql);
 	$stt->bindValue(':id' ,$_SESSION['id']);
 	$stt->execute();
-
   //$stt->fetch(PDO::FETCH_ASSOC);
-} 
- catch (\Exception $e) {
-  echo $e->getMessage() . PHP_EOL;
-}
-
-
-/* retweetを表示するためにデータベースへ接続 */
-try {
-  $db = getDb();
-  $sql = 'select name, id from retweet';
-  $strt = $db->prepare($sql);
-  $strt->execute();
-  $row3 = $strt->fetch(PDO::FETCH_ASSOC);
-  $r_name= $row3['name'];
 } 
  catch (\Exception $e) {
   echo $e->getMessage() . PHP_EOL;
@@ -110,8 +95,7 @@ catch (\Exception $e) {
 						<div class="tweet">
 								<div class="tweet-main-box">
 										<div class="tweet-main-left">
-											<div class="tweet-contents-img">
-											</div>
+										<img src="image/profile/<?php echo $url ?>" alt="" height="50" width="50"> 
 										</div>
 										<div class="tweet-main-right">
 												<form action="tweet.php" method="post" accept-charset="utf-8" class="main-form">
@@ -153,9 +137,13 @@ catch (\Exception $e) {
 													</div>
 											</div>
 									</div>
-									<div class="delete">
+									<?php if($row['user_id'] === $_SESSION['id']) : ?>
+											<div class="delete">
 														<button onclick="del(this, <?php echo $row['id']; ?>)" class="delete-btn">削除</button>
-									</div>
+											</div>
+									<?php else : ?>
+											<?php break; ?>
+									<?php endif ?>
 							</div>
 							<?php 
 							/* replyを表示するためにデータベースへ接続 */
@@ -333,8 +321,8 @@ try {
 				}
 
 					//削除機能実装
-					function del(event, postId) {
-				const httpRequest = new XMLHttpRequest();
+				function del(event, postId) {
+					const httpRequest = new XMLHttpRequest();
      		 //const follow = event.parenNode;//.querySelector("button.user-follow-btn")
 					event.parentNode.parentNode.parentNode.style.display = "none";
 
@@ -357,7 +345,7 @@ try {
 
 
 	//リツイート機能実装
-	function retweet(event, postId) {
+			function retweet(event, postId) {
 				const httpRequest = new XMLHttpRequest();
 				const retweet = event.parentNode.querySelector("p.rewtweet_p")
 

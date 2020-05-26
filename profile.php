@@ -16,22 +16,80 @@ if(isset($_POST["send"])) {
     move_uploaded_file($tempfile , $filemove );
 
     if (!empty($_SESSION["name"])) {
-        
-//var_dump('1');
+
         try {
-            $db = getDb();
-            $stmt = $db->prepare('INSERT INTO ImageUrl(url, name) 
-              VALUES(:filename, :name)');
-            $stmt->bindValue(':filename', $filename);
-            $stmt->bindValue(':name', $_SESSION['name']);
-            $stmt->execute();
-            header("Location:app.php");
-//var_dump('2');
-        } catch(PDOException $e) {
-            print "エラーメッセージ：{$e->getMessage()}";
+          $db = getDb();
+         
+          $sql = 'select * from ImageUrl where user_id = :id';
+          $stmt = $db->prepare($sql);
+          $stmt->bindValue(':id', $_SESSION['id']);
+          $stmt->execute();
+          $row = $stmt->fetch(PDO::FETCH_ASSOC);
+          $user_id = $row['user_id'];
+        } 
+        catch (\Exception $e) {
+          echo $e->getMessage() . PHP_EOL;
         }
+
+        try {
+          $db = getDb();
+         
+          $sql = 'select * from posts where user_id = :id';
+          $stpt = $db->prepare($sql);
+          $stpt->bindValue(':id', $_SESSION['id']);
+          $stpt->execute();
+          $row1 = $stpt->fetch(PDO::FETCH_ASSOC);
+          $user_id2 = $row1['user_id'];
+        } 
+        catch (\Exception $e) {
+          echo $e->getMessage() . PHP_EOL;
+        }
+            if (!empty($user_id)) {
+                try {
+                  $db = getDb();
+                  $stnt = $db->prepare('UPDATE ImageUrl SET url = :filename, name = :name where user_id = :id');
+                  $stnt->bindValue(':filename', $filename);
+                  $stnt->bindValue(':name', $_SESSION['name']);
+                  $stnt->bindValue(':id', $_SESSION['id']);
+                  $stnt->execute();
+                  //var_dump(1);
+                } catch(PDOException $e) {
+                  print "エラーメッセージ：{$e->getMessage()}";
+                }
+
+                if(!empty($user_id2)) {
+                    try {
+                      $db = getDb();
+                      $stnt = $db->prepare('UPDATE posts SET image_url = :filename where user_id = :id');
+                      $stnt->bindValue(':filename', $filename);
+                      $stnt->bindValue(':id', $_SESSION['id']);
+                      $stnt->execute();
+                      //var_dump(1);
+                      header("Location:app.php");
+                    } catch(PDOException $e) {
+                      print "エラーメッセージ：{$e->getMessage()}";
+                    }
+                } else {
+                      header("Location:app.php");
+                }
+            } else {
+                try {
+                  $db = getDb();
+                  $stlt = $db->prepare('INSERT INTO ImageUrl(url, name, user_id) 
+                    VALUES(:filename, :name, :id)');
+                  $stlt->bindValue(':filename', $filename);
+                  $stlt->bindValue(':name', $_SESSION['name']);
+                  $stlt->bindValue(':id', $_SESSION['id']);
+                  $stlt->execute();
+                header("Location:app.php");
+                //var_dump('2');
+                } catch(PDOException $e) {
+                  print "エラーメッセージ：{$e->getMessage()}";
+                }
+            }
     }
-}
+
+  }
 
 ?>
 <!DOCTYPE html>
