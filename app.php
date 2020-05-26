@@ -10,12 +10,11 @@ require_once('login_confirm.php');
 
 
 if(isset($_SESSION['name'])){
-					echo "ようこそ、".$_SESSION['name']."さん！";
         } else {
           header('Location:app_login.php');
           exit;
 		}
-		
+	
 /* 画像をアップロードするためにデータベースへ接続 */
 try {
   $db = getDb();
@@ -85,161 +84,159 @@ catch (\Exception $e) {
 </head>
 <body>
 <div class="screen">
-	<div class="box">
-		<header>
-			<h2 class="home">Home</h2>
-		</header>
-		<main>
-			<div class="test">
-				<div class="display">
-						<div class="tweet">
-								<div class="tweet-main-box">
-										<div class="tweet-main-left">
-										<img src="image/profile/<?php echo $url ?>" alt="" height="50" width="50"> 
+		<div class="box">
+				<header>
+					<h2 class="home">Home</h2>
+				</header>
+				<main>
+						<div class="main-content">
+								<div class="display">
+										<div class="tweet">
+												<div class="tweet-main-box">
+														<div class="tweet-main-left">
+																<img src="image/profile/<?php echo $url ?>" alt="" height="50" width="50"> 
+														</div>
+														<div class="tweet-main-right">
+																<form action="tweet.php" method="post" accept-charset="utf-8" class="main-form">
+																<input type="hidden" name="url" value="<?php echo $url ?>">
+																<input type="hidden" name="user_id" value="<?php echo $_SESSION['id']; ?>">
+																<input type="text" name="name" value="<?php echo $_SESSION['name']; ?>" readonly>
+																<textarea name="tweet" placeholder="What's happening?"></textarea>
+																<input type="submit" name="投稿" class="submit">
+																</form>
+														</div>
+												</div>
 										</div>
-										<div class="tweet-main-right">
-												<form action="tweet.php" method="post" accept-charset="utf-8" class="main-form">
-												<input type="hidden" name="url" value="<?php echo $url ?>">
-												<input type="hidden" name="user_id" value="<?php echo $_SESSION['id']; ?>">
-												<input type="text" name="name" value="<?php echo $_SESSION['name']; ?>" readonly>
-												<textarea name="tweet" placeholder="What's happening?"></textarea>
-												<input type="submit" name="投稿" >
-												</form>
-										</div>
+								<div class="display2">
+										<?php foreach($stt as $row) : ?>
+												<div class="card">
+														<div class="card-content">
+																<div class="card-content-left">
+																		<img src="image/profile/<?php echo $row['image_url']; ?>" alt="" height="50" width="50"> 
+																</div>
+																<div class="card-contents">
+																		<div class="card-contents-name">
+																				<h4><input type="hidden" name="name" value="<?php echo $row['name']; ?>" readonly></h4>
+																				<?php if($row['retweet_name']) : ?>
+																						<p><?php echo $row['retweet_name']."Retweeted"; ?></p>
+																				<?php endif; ?>
+																				<h4><?php echo $row['name']; ?></h4>
+																				<p><?php echo '<br />'. $row['day']; ?></p>
+																		</div>
+																		<div class="card-contents-tweet">
+																				<input type="hidden" name="tweet" value="<?php echo $row['tweet']; ?>" readonly>
+																				<p><?php echo $row['tweet']; ?></p>
+																				<div class="iine">
+																						<button onclick="iine(this, <?php echo $row['id']; ?>)" class="heart"><a href="#"><i class="far fa-heart"></i></a></button>
+																						<button onclick="undoIine(this, <?php echo $row['id']; ?>)" class="heart2">
+																							<a href="#"><i class="fas fa-heart"></i></a>
+																						</button> 
+																						<span class="count"><?php echo $row['fav']; ?></span>
+																				</div>
+																		</div>
+																</div>
+																<?php if($row['user_id'] === $_SESSION['id']) : ?>
+																		<div class="delete">
+																					<button onclick="del(this, <?php echo $row['id']; ?>)" class="delete-btn">削除</button>
+																		</div>
+																<?php else : ?>
+																<?php endif ?>	
+														</div>
+		<?php 
+		/* replyを表示するためにデータベースへ接続 */
+		try {
+			$stht = $db->prepare('select message from reply where id = :id');
+			$stht->bindValue(':id', $row['id']);
+			$stht->execute();
+			//$stt->fetch(PDO::FETCH_ASSOC);
+		} catch (\Exception $e) {
+			echo $e->getMessage() . PHP_EOL;
+		}
+		?>
+														<div class="reply-open">
+																<button class="reply-open-btn" id="reply-open-btn">↓reply</button>
+																<button onclick="retweet(this, <?php echo $row['id']; ?>)">リツイート</button>
+																<p class="rewtweet_p"></p>
+														</div>
+														<div class="reply-box">
+																<form action="reply.php" method="post" accept-charset="utf-8"> 
+																			<p>返信してください</p>
+																			<button class="reply-back" id="reply-back">戻る</button>
+																			<input type="hidden" name="id" value="<?php echo $row['id']; ?>">
+																			<input type="text" name="message">
+																			<input type="submit" value="送信">
+																</form>
+																		<?php foreach ($stht as $row2) : ?>
+																		<p><?php echo $row2['message']."<br>"; ?></p>
+																		<?php endforeach; ?>
+														</div>
+												</div>
+										<?php endforeach; ?>
 								</div>
 						</div>
-						<div class="display2">
-<?php foreach($stt as $row) : ?>
-					<div class="card">
-							<div class="card-content">
-									<div class="card-content-left">
-										<!-- <div class="card-content-img"></div> -->
-											<img src="image/profile/<?php echo $row['image_url']; ?>" alt="" height="50" width="50"> 
-									</div>
-									<div class="card-contents">
-											<div class="card-contents-name">
-												<h4><input type="hidden" name="name" value="<?php echo $row['name']; ?>" readonly></h4>
-												<?php if($row['retweet_name']) : ?>
-														<p><?php echo $row['retweet_name']."Retweeted"; ?></p>
-												<?php endif; ?>
-												<h4><?php echo $row['name']; ?></h4>
-												<p><?php echo '<br />'. $row['day']; ?></p>
-											</div>
-											<div class="card-contents-tweet">
-													<input type="hidden" name="tweet" value="<?php echo $row['tweet']; ?>" readonly>
-													<p><?php echo $row['tweet']; ?></p>
-													<div class="iine">
-															<button onclick="iine(this, <?php echo $row['id']; ?>)" class="heart"><a href="#"><i class="far fa-heart"></i></a></button>
-															<button onclick="undoIine(this, <?php echo $row['id']; ?>)" class="heart2">
-																<a href="#"><i class="fas fa-heart"></i></a>
-															</button> 
-															<span class="count"><?php echo $row['fav']; ?></span>
+				</main>
+		</div>
+		<!-- フォロー機能実装 -->
+		<aside>
+			<div class="user-modal">
+					<div class="user-modal-top">
+						<div class="user-modal-title">
+							<h2>おすすめのユーザー</h2>
+						</div>
+					</div>
+					
+					<div class="user-modal-middle">
+	<?php foreach($stft as $row) : ?> 
+					<?php if($row['id'] != $_SESSION['id']): ?><!--ログインユーザ以外を表示
+		followテーブルに接続し、フォローしたユーザを表示 -->
+											<div class="user-modal-content">
+													<div class="user-modal-content-left">
+															<!-- <div class="user-modal-content-img"></div> 
+															<img src="image/profile/<?php echo $row['image_url']; ?>" alt="" height="50" width="50"> -->
+													</div>
+													<div class="user-modal-content-middle">
+															<p><?php echo $row['name']; ?></p>
+														<!-- <input type="hidden" name="name" value="<?php echo $row['name']; ?>">
+														<input type="hidden" name="id" value="<?php echo$_SESSION['id']; ?>"> -->
+													</div>
+													<div class="user-modal-content-right">
+															<button onclick="follow(this, <?php echo $row['id']; ?>)" class="user-follow-btn">フォロー</button>
 													</div>
 											</div>
-									</div>
-									<?php if($row['user_id'] === $_SESSION['id']) : ?>
-											<div class="delete">
-														<button onclick="del(this, <?php echo $row['id']; ?>)" class="delete-btn">削除</button>
-											</div>
-									<?php else : ?>
-											<?php break; ?>
-									<?php endif ?>
-							</div>
-							<?php 
-							/* replyを表示するためにデータベースへ接続 */
-
-try {
-	$stht = $db->prepare('select message from reply where id = :id');
-	$stht->bindValue(':id', $row['id']);
-	$stht->execute();
-	//$stt->fetch(PDO::FETCH_ASSOC);
-} catch (\Exception $e) {
-	echo $e->getMessage() . PHP_EOL;
-}
-							
-							?>
-							<div class="reply-open">
-									<button class="reply-open-btn" id="reply-open-btn">↓reply</button>
-									<button onclick="retweet(this, <?php echo $row['id']; ?>)">リツイート</button>
-									<p class="rewtweet_p"></p>
-							</div>
-							<div class="reply-box">
-									<form action="reply.php" method="post" accept-charset="utf-8"> 
-												<p>返信してください</p>
-												<button class="reply-back" id="reply-back">戻る</button>
-                        <input type="hidden" name="id" value="<?php echo $row['id']; ?>">
-                        <input type="text" name="message">
-												<input type="submit" value="送信">
-									</form>
-											<?php foreach ($stht as $row2) : ?>
-    									<p><?php echo $row2['message']."<br>"; ?></p>
- 											<?php endforeach; ?>
-							</div>
+					<?php endif ?>
+	<?php endforeach; ?>
 					</div>
-<?php endforeach; ?>
-						</div>
-				</div>
 			</div>
-		</main>
-	</div>
-	<!-- フォロー機能実装 -->
-	<aside>
-		<div class="user-modal">
-				<div class="user-modal-top">
-					<div class="user-modal-title">
-						<h2>おすすめのユーザー</h2>
+		</aside>
+		<nav>
+			<ul>
+				<li><a href=""><i class="fas fa-home fa-2x"></i><p class="nav-font">Home</p></a></li>
+				<li><a href="profile.php"><div class="profile-img"></div><p class="nav-font">Profile</p></a></li>
+				<li><a href="#" class="tweet-btn">Tweet</a></li>
+			</ul>
+			<div class="tweet-modal" id="tweet-modal">
+				<div class="tweet-content">
+					<div class="tweet-modal-close">
+						<i class="fas fa-times"></i>
 					</div>
-				</div>
-				
-				<div class="user-modal-middle">
-<?php foreach($stft as $row) : ?> 
-				<?php if($row['id'] != $_SESSION['id']): ?><!--ログインユーザ以外を表示
-	followテーブルに接続し、フォローしたユーザを表示 -->
-										<div class="user-modal-content">
-												<div class="user-modal-content-left">
-														<!-- <div class="user-modal-content-img"></div> 
-														<img src="image/profile/<?php echo $row['image_url']; ?>" alt="" height="50" width="50"> -->
-												</div>
-												<div class="user-modal-content-middle">
-														<p><?php echo $row['name']; ?></p>
-													<!-- <input type="hidden" name="name" value="<?php echo $row['name']; ?>">
-													<input type="hidden" name="id" value="<?php echo$_SESSION['id']; ?>"> -->
-												</div>
-												<div class="user-modal-content-right">
-														<button onclick="follow(this, <?php echo $row['id']; ?>)" class="user-follow-btn">フォロー</button>
-												</div>
-										</div>
-				<?php endif ?>
-<?php endforeach; ?>
-				</div>
-		</div>
-	</aside>
-	<nav>
-		<ul>
-			<li><a href=""><i class="fas fa-home fa-2x"></i><p class="nav-font">Home</p></a></li>
-			<li><a href="profile.php"><div class="profile-img"></div><p class="nav-font">Profile</p></a></li>
-			<li><a href="#" class="tweet-btn">Tweet</a></li>
-		</ul>
-		<div class="tweet-modal" id="tweet-modal">
-			<div class="tweet-content">
-				<div class="tweet-modal-close">
-					<i class="fas fa-times"></i>
-				</div>
-				<div class="tweet-contents">
-					<div class="tweet-contents-left">
-						<div class="tweet-contents-img">
+					<div class="tweet-contents">
+						<div class="tweet-contents-left">
+							<div class="tweet-contents-img">
+							</div>
 						</div>
-					</div>
-					<div class="tweet-contents-right">
-						<form action="" method="post" accept-charset="utf-8" class="form">
-							<textarea name="message" placeholder="What's happening?"></textarea>
-							<input type="submit" name="Tweet" >
-						</form>
+						<div class="tweet-contents-right">
+								<form action="tweet.php" method="post" accept-charset="utf-8" class="form">
+										<input type="hidden" name="url" value="<?php echo $url ?>">
+										<input type="hidden" name="user_id" value="<?php echo $_SESSION['id']; ?>">
+										<input type="hidden" name="name" value="<?php echo $_SESSION['name']; ?>" readonly>
+										<textarea name="tweet" placeholder="What's happening?"></textarea>
+										<input type="submit" name="Tweet" >
+								</form>
+						</div>
 					</div>
 				</div>
 			</div>
-		</div>
-	</nav>
+		</nav>
 </div>
 
 	<!-- jQuery、Popper.js、Bootstrap JS -->
