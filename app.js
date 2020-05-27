@@ -5,19 +5,14 @@ $(function() {
   $('.tweet-modal-close').click(function() {
     $('#tweet-modal').fadeOut();
   });
-
-/*
-
-  $('.heart').click(function() {
-  	$('.heart').css('display', 'none');
-    $('.heart2').fadeIn();
-  });
-  $('.heart2').click(function() {
-  	$('.heart2').css('display', 'none');
-    $('.heart').fadeIn();
-  });
   
-*/
+  $('.logout').click(function() {
+    $('#logout-modal').fadeIn();
+  });
+  $('.logout-modal-close').click(function() {
+    $('#logout-modal').fadeOut();
+  });
+
 
   $('#reply-open-btn').click(function() {
   	$('.reply-open').css('display', 'none');

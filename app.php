@@ -33,7 +33,7 @@ try {
 /* tweetを表示するためにデータベースへ接続 */
 try {
   $db = getDb();
-  $sql = 'select name, tweet, day, image_url, id, fav, retweet_name, user_id from posts where user_id = :id or user_id = any(
+  $sql = 'select * from posts where user_id = :id or user_id = any(
 		select user_id2 from follow where user_id = :id) order by id desc';
 	$stt = $db->prepare($sql);
 	$stt->bindValue(':id' ,$_SESSION['id']);
@@ -48,8 +48,11 @@ try {
 /* ユーザデータを表示するためにデータベースへ接続 */
 try {
   $db = getDb();
-  $sql = 'select name, id from UserData order by id desc';
-  $stmt = $db->query($sql);
+  $sql = 'select name, id from UserData where id = :id';
+	$stmt = $db->prepare($sql);
+	$stmt->bindValue(':id' ,$_SESSION['id']);
+	$stmt->execute();
+	$row4 = $stmt->fetch(PDO::FETCH_ASSOC);
 } 
  catch (\Exception $e) {
   echo $e->getMessage() . PHP_EOL;
@@ -99,9 +102,9 @@ catch (\Exception $e) {
 														<div class="tweet-main-right">
 																<form action="tweet.php" method="post" accept-charset="utf-8" class="main-form">
 																<input type="hidden" name="url" value="<?php echo $url ?>">
-																<input type="hidden" name="user_id" value="<?php echo $_SESSION['id']; ?>">
-																<input type="text" name="name" value="<?php echo $_SESSION['name']; ?>" readonly>
-																<textarea name="tweet" placeholder="What's happening?"></textarea>
+																<input type="hidden" name="user_id" value="<?php echo $row4['id']; ?>">
+																<input type="text" name="name" value="<?php echo $row4['name']; ?>" readonly>
+																<textarea name="tweet" placeholder="What's happening?" maxlength="80"></textarea>
 																<input type="submit" name="投稿" class="submit">
 																</form>
 														</div>
@@ -116,11 +119,11 @@ catch (\Exception $e) {
 																</div>
 																<div class="card-contents">
 																		<div class="card-contents-name">
-																				<h4><input type="hidden" name="name" value="<?php echo $row['name']; ?>" readonly></h4>
+																				<input type="hidden" name="name" value="<?php echo $row['name']; ?>" readonly>
+																				<p><?php echo $row['name']; ?></p>
 																				<?php if($row['retweet_name']) : ?>
 																						<p><?php echo $row['retweet_name']."Retweeted"; ?></p>
 																				<?php endif; ?>
-																				<h4><?php echo $row['name']; ?></h4>
 																				<p><?php echo '<br />'. $row['day']; ?></p>
 																		</div>
 																		<div class="card-contents-tweet">
@@ -160,7 +163,6 @@ catch (\Exception $e) {
 														</div>
 														<div class="reply-box">
 																<form action="reply.php" method="post" accept-charset="utf-8"> 
-																			<p>返信してください</p>
 																			<button class="reply-back" id="reply-back">戻る</button>
 																			<input type="hidden" name="id" value="<?php echo $row['id']; ?>">
 																			<input type="text" name="message">
@@ -191,13 +193,9 @@ catch (\Exception $e) {
 		followテーブルに接続し、フォローしたユーザを表示 -->
 											<div class="user-modal-content">
 													<div class="user-modal-content-left">
-															<!-- <div class="user-modal-content-img"></div> 
-															<img src="image/profile/<?php echo $row['image_url']; ?>" alt="" height="50" width="50"> -->
 													</div>
 													<div class="user-modal-content-middle">
 															<p><?php echo $row['name']; ?></p>
-														<!-- <input type="hidden" name="name" value="<?php echo $row['name']; ?>">
-														<input type="hidden" name="id" value="<?php echo$_SESSION['id']; ?>"> -->
 													</div>
 													<div class="user-modal-content-right">
 															<button onclick="follow(this, <?php echo $row['id']; ?>)" class="user-follow-btn">フォロー</button>
@@ -210,8 +208,23 @@ catch (\Exception $e) {
 		</aside>
 		<nav>
 			<ul>
-				<li><a href=""><i class="fas fa-home fa-2x"></i><p class="nav-font">Home</p></a></li>
+				<li><a href="app.php"><i class="fas fa-home fa-2x"></i><p class="nav-font">Home</p></a></li>
 				<li><a href="profile.php"><div class="profile-img"></div><p class="nav-font">Profile</p></a></li>
+				<li><a href="#" class="logout"><div class="profile-img"></div><p class="nav-font">ログアウト</p></a></li>
+				<div class="logout-modal" id="logout-modal">
+				<div class="logout-content">
+					<div class="logout-modal-close">
+						<i class="fas fa-times"></i>
+					</div>
+					<div class="logout-contents">
+						<div class="tweet-contents-right">
+								<p>ログアウトしますか？</p>
+								<a href="logout.php">Yes</a>
+								<a href="app.php">No</a>
+						</div>
+					</div>
+				</div>
+			</div>
 				<li><a href="#" class="tweet-btn">Tweet</a></li>
 			</ul>
 			<div class="tweet-modal" id="tweet-modal">
@@ -229,7 +242,7 @@ catch (\Exception $e) {
 										<input type="hidden" name="url" value="<?php echo $url ?>">
 										<input type="hidden" name="user_id" value="<?php echo $_SESSION['id']; ?>">
 										<input type="hidden" name="name" value="<?php echo $_SESSION['name']; ?>" readonly>
-										<textarea name="tweet" placeholder="What's happening?"></textarea>
+										<textarea name="tweet" placeholder="What's happening?" maxlength="80"></textarea>
 										<input type="submit" name="Tweet" >
 								</form>
 						</div>
