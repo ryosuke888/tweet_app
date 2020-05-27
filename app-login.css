@@ -11,6 +11,7 @@ body {
 	height: 100%;
 	width: 100%;
 }
+
 .login-title {
 	text-align: center;
 }
@@ -19,14 +20,19 @@ body {
 	padding-top: 100px;
 }
 .login-form {
-	display: flex;
-	justify-content: center;
+	display: block;
 }
 .login-form input {
+  width: 500px;
 	display: block;
-	margin: 10px;
-	width: 500px;
+	margin: 20px auto;
 	height: 50px;
+}
+.textarea {
+	height: 100px;
+	width: 400px;
+	display: block;
+	font-size: 16px;
 }
 .register-title p {
 	color: white;
@@ -36,10 +42,7 @@ body {
 	justify-content: center;
 
 }
-.submit input {
-	width: 500px;
-	border-radius: 25px;
-}
+
 .login-bottom {
 	text-align: center;
 	color: white;
@@ -54,7 +57,7 @@ body {
 .register {
 	background-color: navy;
 	height: 400px;
-	width: 600px;
+	width: 650px;
 }
 
 .register-contents2 {
@@ -99,7 +102,7 @@ body {
 	display: block;
 	background-color: green;
 	line-height: 35px;
-	width: 100px;
+	width: 150px;
 	text-align: center;
 	border-radius: 25px;
 	color: white;

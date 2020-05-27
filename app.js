@@ -5,13 +5,22 @@ $(function() {
   $('.tweet-modal-close').click(function() {
     $('#tweet-modal').fadeOut();
   });
-  $('.heart').click(function() {
-  	$('#heart').css('display', 'none');
-    $('#heart2').fadeIn();
+  
+  $('.logout').click(function() {
+    $('#logout-modal').fadeIn();
   });
-  $('.heart2').click(function() {
-  	$('#heart2').css('display', 'none');
-    $('#heart').fadeIn();
+  $('.logout-modal-close').click(function() {
+    $('#logout-modal').fadeOut();
+  });
+
+
+  $('#reply-open-btn').click(function() {
+  	$('.reply-open').css('display', 'none');
+    $('.reply-box').fadeIn();
+  });
+  $('#reply-back').click(function() {
+  	$('.reply-box').css('display', 'none');
+    $('.reply-open').fadeIn();
   });
   
 });
